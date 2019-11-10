@@ -18,9 +18,13 @@ public class PhaseOne
 
     private Bird bird;
     private Sewer sewer;
+    private Coin coin1;
+    //private Coin coin2;
 
     private Time time;
     private int state;
+    private int score;
+    private boolean scored;
 
     public SpriteBatch batch () {
         return batch;
@@ -44,8 +48,15 @@ public class PhaseOne
         float sewerHeight = device.height() / 2 - sewer.texture().getHeight();
         sewer.positionY(sewerHeight);
 
-        time = new Time(30);
+        coin1 = new Coin();
+        coin1.positionX(device.width());
+        coin1.positionY(sewerHeight + sewer.texture().getHeight() + 150);
+        //coin2 = coin1;
+
+        time = new Time(45);
         state = 0;
+        score = 0;
+        scored = false;
     }
 
     private void draw ()
@@ -56,8 +67,15 @@ public class PhaseOne
         batch.draw(sewer.texture(), sewer.positionX(), sewer.positionY());
         batch.draw(bird.fly(), bird.positionX(), bird.positionY());
 
+        if (!scored)
+            batch.draw(coin1.turn(), coin1.positionX(), coin1.positionY());
+        //batch.draw(coin2.turn(), device.width() / 2, device.height() - coin2.texture(0).getHeight());
+
         String timeText = "Tempo: " + time.get();
         time.title().draw(batch, timeText, device.width() - 250, device.height() - 50);
+
+        String scoreText = "Pontos: " + score;
+        time.title().draw(batch, scoreText, device.width() - 500, device.height() - 50);
 
         if (state == 0)
         {
@@ -96,6 +114,7 @@ public class PhaseOne
             bird.fall();
             sewer.move();
             time.loss();
+            coin1.move();
 
             //Verifica se o tempo acabou
             if (time.get() <= 0)
@@ -113,6 +132,9 @@ public class PhaseOne
                 int sewerRandomHeight = new Random().nextInt(sewerMaxHeight - sewerMinHeight) + sewerMinHeight;
                 sewer.positionY(sewerRandomHeight);
                 sewer.positionX(device.width());
+                coin1.positionY(sewerRandomHeight + sewer.texture().getHeight() + 150);
+                coin1.positionX(device.width());
+                scored = false;
             }
 
             //Verifica se houve colisão
@@ -122,6 +144,13 @@ public class PhaseOne
             {
                 state = 2;
             }
+
+            if (Intersector.overlaps(bird.body(), coin1.body()))
+            {
+                score++;
+                scored = true;
+                coin1.positionX(device.width());
+            }
         }
 
         //Estado 2: game over
@@ -130,7 +159,7 @@ public class PhaseOne
             //Zerar o valores padrões
             if (Gdx.input.justTouched())
             {
-                state = 0;
+                state = 1;
                 time.clean();
                 bird.die();
                 bird.positionY(device.height() / 2);

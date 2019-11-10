@@ -29,8 +29,7 @@ public class Sewer
 
     public void setRectangle()
     {
-        rectangle = new Rectangle
-        (
+        rectangle = new Rectangle(
             positionX, positionY,
             texture.getWidth(), texture.getHeight()
         );
