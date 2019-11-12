@@ -20,6 +20,7 @@ public class PhaseOne
     private Sewer sewer;
     private Coin coin1;
     //private Coin coin2;
+    private Tree tree;
 
     private Time time;
     private int state;
@@ -49,9 +50,13 @@ public class PhaseOne
         sewer.positionY(sewerHeight);
 
         coin1 = new Coin();
-        coin1.positionX(device.width());
+        coin1.positionX(device.width() + 20);
         coin1.positionY(sewerHeight + sewer.texture().getHeight() + 150);
         //coin2 = coin1;
+
+        tree = new Tree();
+        tree.positionX(device.width());
+        tree.positionY(-20);
 
         time = new Time(45);
         state = 0;
@@ -69,7 +74,7 @@ public class PhaseOne
 
         if (!scored)
             batch.draw(coin1.turn(), coin1.positionX(), coin1.positionY());
-        //batch.draw(coin2.turn(), device.width() / 2, device.height() - coin2.texture(0).getHeight());
+            //batch.draw(coin2.turn(), device.width() / 2, device.height() - coin2.texture(0).getHeight());
 
         String timeText = "Tempo: " + time.get();
         time.title().draw(batch, timeText, device.width() - 250, device.height() - 50);
@@ -91,6 +96,11 @@ public class PhaseOne
         }
         else if (state == 3)
         {
+            batch.draw(tree.texture(), tree.positionX(), tree.positionY());
+        }
+        else if (state == 4)
+        {
+            batch.draw(tree.texture(), tree.positionX(), tree.positionY());
             text.get().draw(batch, "Você passou de fase!",
                     device.width() / 2 - 230, device.height() / 2 - gameOver.texture().getHeight());
         }
@@ -116,28 +126,29 @@ public class PhaseOne
             time.loss();
             coin1.move();
 
-            //Verifica se o tempo acabou
-            if (time.get() <= 0)
-                state = 3;
-
             //Verifica se o usuário tocou na tela
             if (Gdx.input.justTouched())
                 bird.rise();
 
             //Verifica se o cano saiu inteiramente da tela
-            if (!sewer.inScreen())
+            if (!sewer.inScreen() && time.get() > 0)
             {
-                int sewerMaxHeight = (int) device.height() - sewer.texture().getHeight() - bird.texture(0).getHeight() - 200;
+                int sewerMaxHeight = (int) device.height() - sewer.texture().getHeight()
+                        - bird.texture(0).getHeight() - 200;
                 int sewerMinHeight = -600;
                 int sewerRandomHeight = new Random().nextInt(sewerMaxHeight - sewerMinHeight) + sewerMinHeight;
                 sewer.positionY(sewerRandomHeight);
                 sewer.positionX(device.width());
                 coin1.positionY(sewerRandomHeight + sewer.texture().getHeight() + 150);
-                coin1.positionX(device.width());
+                coin1.positionX(device.width() + 20);
                 scored = false;
             }
 
-            //Verifica se houve colisão
+            //Verifica se o tempo acabou
+            else if (!sewer.inScreen() && time.get() <= 0)
+                state = 3;
+
+            //Verifica se houve colisão com o cano ou laterais
             if (Intersector.overlaps(bird.body(), sewer.body())
                     || bird.positionY() <= 0
                     || bird.positionY() >= device.height())
@@ -145,6 +156,7 @@ public class PhaseOne
                 state = 2;
             }
 
+            //Verifica se pássaro encostou na moeda
             if (Intersector.overlaps(bird.body(), coin1.body()))
             {
                 score++;
@@ -160,11 +172,36 @@ public class PhaseOne
             if (Gdx.input.justTouched())
             {
                 state = 1;
+                score = 0;
+                scored = false;
                 time.clean();
                 bird.die();
                 bird.positionY(device.height() / 2);
                 sewer.positionX(device.width());
+                coin1.positionX(device.width() + 20);
             }
+        }
+
+        //Estado 3: animação final
+        else if (state == 3)
+        {
+            bird.fall();
+            tree.move();
+
+            //Verifica se o usuário tocou na tela
+            if (Gdx.input.justTouched())
+                bird.rise();
+
+            //Verifica se houve colisão com as laterais
+            if (bird.positionY() <= 0 || bird.positionY() >= device.height())
+                state = 2;
+
+            //Verifica se a árvore chegou ao destino
+            int treeParcialWidth = (tree.texture().getWidth() * 70) / 100;
+            int treeFinalWidth = (int) device.width() - treeParcialWidth;
+
+            if (tree.positionX() <= treeFinalWidth)
+                state = 4;
         }
 
         draw();

@@ -35,6 +35,10 @@ public class Time
     {
         float deltaTime = Gdx.graphics.getDeltaTime();
         countVariation = countVariation - deltaTime;
+
+        if (countVariation < 1)
+            countVariation = 0;
+
         count = (int) countVariation;
     }
 
