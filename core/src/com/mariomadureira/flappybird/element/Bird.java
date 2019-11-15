@@ -60,6 +60,13 @@ public class Bird
         return texture((int) textureVariation);
     }
 
+    public void move()
+    {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        positionX = positionX + deltaTime * 300;
+        setBody();
+    }
+
     public void positionY(float positionY) {
         this.positionY = positionY;
     }

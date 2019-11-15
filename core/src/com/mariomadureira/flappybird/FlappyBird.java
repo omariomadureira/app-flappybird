@@ -7,6 +7,7 @@ import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mariomadureira.flappybird.config.Device;
 import com.mariomadureira.flappybird.phase.PhaseOne;
+import com.mariomadureira.flappybird.phase.PhaseTwo;
 
 public class FlappyBird extends ApplicationAdapter
 {
@@ -14,7 +15,27 @@ public class FlappyBird extends ApplicationAdapter
     private OrthographicCamera camera;
     private Viewport viewport;
 
-    private PhaseOne phase;
+    private PhaseOne phaseOne;
+    private PhaseTwo phaseTwo;
+
+    private int score;
+    private int phase;
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public void setPhase(int phase) {
+        this.phase = phase;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public int getPhase() {
+        return phase;
+    }
 
     @Override
     public void create ()
@@ -24,20 +45,48 @@ public class FlappyBird extends ApplicationAdapter
         camera.position.set(device.width() /2, device.height() /2, 0);
         viewport = new StretchViewport(device.width(), device.height(), camera);
 
-        phase = new PhaseOne();
-        phase.create();
+        score = 0;
+
+        phase = 1;
+        createPhaseOne();
+    }
+
+    public void createPhaseOne()
+    {
+        phaseOne = new PhaseOne();
+        phaseOne.create();
+    }
+
+    public void createPhaseTwo()
+    {
+        phaseTwo = new PhaseTwo();
+        phaseTwo.create();
+        phaseTwo.setScore(getScore());
     }
 
     @Override
     public void render ()
     {
-        //Limpa a memória do dispositivo
         camera.update();
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
-        //Configurar dados de projeção da câmera
-        phase.batch().setProjectionMatrix(camera.combined);
-        phase.render();
+        if (getPhase() == 1)
+        {
+            phaseOne.getBatch().setProjectionMatrix(camera.combined);
+            phaseOne.render();
+
+            if (phaseOne.isFinished())
+            {
+                setScore(phaseOne.getScore());
+                setPhase(2);
+                createPhaseTwo();
+            }
+        }
+        else if (getPhase() == 2)
+        {
+            phaseTwo.getBatch().setProjectionMatrix(camera.combined);
+            phaseTwo.render();
+        }
     }
 
     @Override

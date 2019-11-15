@@ -14,7 +14,9 @@ public class Coin
     private float positionY;
     private float positionX;
 
-    public Coin()
+    private boolean scored;
+
+    public Coin(float deviceWidth)
     {
         texture = new Texture[7];
         texture[0] = new Texture("coin1.png");
@@ -26,6 +28,8 @@ public class Coin
         texture[6] = new Texture("coin7.png");
         textureVariation = 0;
         circle = new Circle();
+        scored = false;
+        positionX = deviceWidth;
     }
 
     public Texture texture(int index)
@@ -83,5 +87,18 @@ public class Coin
 
     public float positionX() {
         return positionX;
+    }
+
+    public boolean isScored() {
+        return scored;
+    }
+
+    public void setScored(boolean scored) {
+        this.scored = scored;
+    }
+
+    public boolean inScreen()
+    {
+        return positionX >= -texture[0].getWidth();
     }
 }

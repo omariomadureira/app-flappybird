@@ -6,9 +6,17 @@ public class Background
 {
     private Texture texture;
 
-    public Background()
+    public Background(int phase)
     {
-        texture = new Texture("fundo.png");
+        switch (phase)
+        {
+            case 1:
+                texture = new Texture("fundo-1.png");
+                break;
+            case 2:
+                texture = new Texture("fundo-2.png");
+                break;
+        }
     }
 
     public Texture texture()

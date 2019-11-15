@@ -9,7 +9,7 @@ import jdk.nashorn.internal.objects.Global;
 
 import java.util.Random;
 
-public class PhaseOne
+public class PhaseTwo
 {
     private Device device;
     private SpriteBatch batch;
@@ -32,9 +32,9 @@ public class PhaseOne
         return batch;
     }
 
-    public int getScore ()
+    public void setScore (int score)
     {
-        return score;
+        this.score = score;
     }
 
     public void create ()
@@ -42,7 +42,7 @@ public class PhaseOne
         device = new Device();
         batch = new SpriteBatch();
 
-        background = new Background(1);
+        background = new Background(2);
         gameOver = new Title("gameOver");
         text = new Text(3);
 
@@ -51,12 +51,12 @@ public class PhaseOne
         sewer = new Sewer("down");
 
         coins = new Coin[]
-        {
-            new Coin(device.width()),
-            new Coin(device.width()),
-            new Coin(device.width()),
-            new Coin(device.width()),
-        };
+                {
+                        new Coin(device.width()),
+                        new Coin(device.width()),
+                        new Coin(device.width()),
+                        new Coin(device.width()),
+                };
 
         tree = new Tree();
         tree.positionX(device.width());
@@ -145,12 +145,12 @@ public class PhaseOne
 
         if (state == 0)
         {
-            text.get().draw(batch, "Fase 1: Toque para começar!",
+            text.get().draw(batch, "Fase 2: Toque para começar!",
                     device.width() / 2 - 270, device.height() / 2 - gameOver.texture().getHeight());
         }
         else if (state == 2)
         {
-            text.get().draw(batch, "Fase 1: Toque para reiniciar!",
+            text.get().draw(batch, "Fase 2: Toque para reiniciar!",
                     device.width() / 2 - 270, device.height() / 2 - gameOver.texture().getHeight());
 
             batch.draw(gameOver.texture(), device.width() / 2 - gameOver.texture().getWidth() / 2, device.height() / 2);
@@ -163,9 +163,7 @@ public class PhaseOne
         {
             batch.draw(tree.texture(), tree.positionX(), tree.positionY());
             text.get().draw(batch, "Você passou de fase!",
-                    device.width() / 2 - 215, device.height() / 2);
-            text.get().draw(batch, "Toque para continuar...",
-                    device.width() / 2 - 215, device.height() / 2 - 40);
+                    device.width() / 2 - 215, device.height() / 2 - gameOver.texture().getHeight());
         }
 
         batch.end();
