@@ -2,25 +2,21 @@ package com.mariomadureira.flappybird.element;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class Background
-{
+public class Background {
     private Texture texture;
 
-    public Background(int phase)
-    {
-        switch (phase)
-        {
+    public Background(int phase) {
+        switch (phase) {
             case 1:
-                texture = new Texture("fundo-1.png");
+                texture = new Texture("background1.png");
                 break;
             case 2:
-                texture = new Texture("fundo-2.png");
+                texture = new Texture("background2.png");
                 break;
         }
     }
 
-    public Texture texture()
-    {
+    public Texture getTexture() {
         return texture;
     }
 }

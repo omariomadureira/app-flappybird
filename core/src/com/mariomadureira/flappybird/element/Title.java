@@ -2,18 +2,15 @@ package com.mariomadureira.flappybird.element;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class Title
-{
+public class Title {
     private Texture texture;
 
-    public Title(String name)
-    {
-        if (name.equals("gameOver"))
-            texture = new Texture("game_over.png");
+    public Title(String type) {
+        if (type.equals("gameOver"))
+            texture = new Texture("gameover.png");
     }
 
-    public Texture texture()
-    {
+    public Texture getTexture() {
         return texture;
     }
 }

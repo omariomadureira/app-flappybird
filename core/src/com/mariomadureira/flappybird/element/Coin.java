@@ -3,21 +3,18 @@ package com.mariomadureira.flappybird.element;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Circle;
+import com.mariomadureira.flappybird.config.Device;
 
-public class Coin
-{
+public class Coin {
     private Texture[] texture;
     private float textureVariation;
-
-    private Circle circle;
+    private Circle body;
 
     private float positionY;
     private float positionX;
 
-    private boolean scored;
-
-    public Coin(float deviceWidth)
-    {
+    public Coin() {
+        textureVariation = 0;
         texture = new Texture[7];
         texture[0] = new Texture("coin1.png");
         texture[1] = new Texture("coin2.png");
@@ -26,79 +23,65 @@ public class Coin
         texture[4] = new Texture("coin5.png");
         texture[5] = new Texture("coin6.png");
         texture[6] = new Texture("coin7.png");
-        textureVariation = 0;
-        circle = new Circle();
-        scored = false;
-        positionX = deviceWidth;
+        body = new Circle();
+        positionX = new Device().getWidth();
     }
 
-    public Texture texture(int index)
-    {
+    //region Getters and Setters
+    public Texture getTexture(int index) {
         if (index > texture.length - 1)
             index = 0;
 
         return texture[index];
     }
 
-    public Texture turn()
-    {
+    private void setBody() {
+        float halfTextureX = (float) getTexture(0).getWidth() / 2;
+        float halfTextureY = (float) getTexture(0).getHeight() / 2;
+
+        body.set(positionX + halfTextureX,
+                positionY + halfTextureY,
+                halfTextureX);
+    }
+
+    public Circle getBody() {
+        return body;
+    }
+
+    public void setPositionY(float positionY) {
+        this.positionY = positionY;
+    }
+
+    public float getPositionY() {
+        return positionY;
+    }
+
+    public void setPositionX(float positionX) {
+        this.positionX = positionX;
+    }
+
+    public float getPositionX() {
+        return positionX;
+    }
+    //endregion
+
+    public Texture animate() {
         float deltaTime = Gdx.graphics.getDeltaTime();
         textureVariation = textureVariation + deltaTime * 5;
 
         if (textureVariation > texture.length - 1)
             textureVariation = 0;
 
-        return texture((int) textureVariation);
+        return getTexture((int) textureVariation);
     }
 
-    public void move()
-    {
+    public void move() {
         float deltaTime = Gdx.graphics.getDeltaTime();
         positionX = positionX - deltaTime * 200;
         setBody();
     }
 
-    public void setBody()
-    {
-        float halfTextureX = texture(0).getWidth() / 2;
-        float halfTextureY = texture(0).getHeight() / 2;
-
-        circle.set(positionX + halfTextureX,
-                positionY + halfTextureY,
-                halfTextureX);
-    }
-
-    public Circle body()
-    {
-        return circle;
-    }
-
-    public void positionY(float positionY) {
-        this.positionY = positionY;
-    }
-
-    public float positionY() {
-        return positionY;
-    }
-
-    public void positionX(float positionX) {
-        this.positionX = positionX;
-    }
-
-    public float positionX() {
-        return positionX;
-    }
-
-    public boolean isScored() {
-        return scored;
-    }
-
-    public void setScored(boolean scored) {
-        this.scored = scored;
-    }
-
-    public boolean inScreen()
-    {
-        return positionX >= -texture[0].getWidth();
+    public boolean isGone() {
+        return positionX < -texture[0].getWidth();
     }
 }

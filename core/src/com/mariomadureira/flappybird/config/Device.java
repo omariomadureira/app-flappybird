@@ -1,21 +1,19 @@
 package com.mariomadureira.flappybird.config;
 
-public class Device
-{
+public class Device {
     private float width;
     private float height;
 
-    public Device()
-    {
+    public Device() {
         width = 768;
         height = 1024;
     }
 
-    public float width() {
+    public float getWidth() {
         return width;
     }
 
-    public float height() {
+    public float getHeight() {
         return height;
     }
 }

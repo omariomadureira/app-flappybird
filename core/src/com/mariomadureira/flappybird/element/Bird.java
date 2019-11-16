@@ -4,87 +4,81 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Circle;
 
-public class Bird
-{
+public class Bird {
     private Texture[] texture;
     private float textureVariation;
-
-    private Circle circle;
+    private Circle body;
 
     private int speed;
+
     private float positionY;
     private float positionX;
 
-    public Bird()
-    {
+    public Bird() {
         texture = new Texture[3];
-        texture[0] = new Texture("passaro1.png");
-        texture[1] = new Texture("passaro2.png");
-        texture[2] = new Texture("passaro3.png");
+        texture[0] = new Texture("bird1.png");
+        texture[1] = new Texture("bird2.png");
+        texture[2] = new Texture("bird3.png");
         textureVariation = 0;
-        circle = new Circle();
+        body = new Circle();
         speed = 0;
     }
 
-    public Texture texture(int index)
-    {
+    //region Getters and Setters
+    public Texture getTexture(int index) {
         if (index > texture.length - 1)
             index = 0;
 
         return texture[index];
     }
 
-    public void setBody()
-    {
-        float halfTextureX = texture(0).getWidth() / 2;
-        float halfTextureY = texture(0).getHeight() / 2;
+    public Circle getBody() {
+        return body;
+    }
 
-        circle.set(positionX + halfTextureX,
+    private void setBody() {
+        float halfTextureX = (float) getTexture(0).getWidth() / 2;
+        float halfTextureY = (float) getTexture(0).getHeight() / 2;
+
+        body.set(positionX + halfTextureX,
                 positionY + halfTextureY,
                 halfTextureX);
     }
 
-    public Circle body()
-    {
-        return circle;
+    public void setPositionY(float positionY) {
+        this.positionY = positionY;
     }
 
-    public Texture fly()
-    {
+    public float getPositionY() {
+        return positionY;
+    }
+
+    public void setPositionX(float positionX) {
+        this.positionX = positionX;
+    }
+
+    public float getPositionX() {
+        return positionX;
+    }
+    //endregion
+
+    public Texture animate() {
         float deltaTime = Gdx.graphics.getDeltaTime();
         textureVariation = textureVariation + deltaTime * 10;
 
         if (textureVariation > texture.length - 1)
             textureVariation = 0;
 
-        return texture((int) textureVariation);
+        return getTexture((int) textureVariation);
     }
 
-    public void move()
-    {
+    public void fly() {
         float deltaTime = Gdx.graphics.getDeltaTime();
         positionX = positionX + deltaTime * 300;
         setBody();
     }
 
-    public void positionY(float positionY) {
-        this.positionY = positionY;
-    }
-
-    public float positionY() {
-        return positionY;
-    }
-
-    public void positionX(float positionX) {
-        this.positionX = positionX;
-    }
-
-    public float positionX() {
-        return positionX;
-    }
-
-    public void fall()
-    {
+    public void fall() {
         speed = speed + 1;
 
         if (positionY > 0 || speed < 0)
@@ -93,13 +87,11 @@ public class Bird
         setBody();
     }
 
-    public void rise()
-    {
-        speed = - 15;
+    public void rise() {
+        speed = -15;
     }
 
-    public void die()
-    {
+    public void die() {
         speed = 0;
     }
 }
