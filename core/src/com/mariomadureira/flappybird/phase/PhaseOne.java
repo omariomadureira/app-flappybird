@@ -42,6 +42,7 @@ public class PhaseOne {
                         new Coin(),
                         new Coin(),
                         new Coin(),
+                        new Coin(),
                         new Coin()
                 };
         tree = new Tree();
@@ -103,11 +104,7 @@ public class PhaseOne {
     }
 
     public boolean isFinished() {
-        if (state == 5) {
-            return true;
-        }
-
-        return false;
+        return state == 5;
     }
 
     private void draw() {
@@ -170,12 +167,6 @@ public class PhaseOne {
 
                 sewer.setPositionY(sewerRandomHeight);
                 sewer.setPositionX(device.getWidth());
-
-                for (Coin coin : coins) {
-                    if (Intersector.overlaps(coin.getBody(), sewer.getBody())) {
-                        sewer.setPositionY(sewer.getPositionY() - 200);
-                    }
-                }
             }
 
             Coin previous = coins[0];
@@ -188,10 +179,9 @@ public class PhaseOne {
                 if (coin.isGone() && time.get() > 0) {
                     coin.setPositionX(device.getWidth());
 
-                    int sewerImageHeight = (int) sewer.getImage().getHeight();
-                    int sewerMaxHeight = (int) device.getHeight() - sewerImageHeight - bird.getTexture(0).getHeight() - 200;
-                    int coinMaxHeight = sewerMaxHeight + sewerImageHeight + 150;
-                    int coinMinHeight = (int) sewer.getPositionY() + sewerImageHeight + 100;
+                    int sewerMaxHeight = (int) sewer.getImage().getHeight();
+                    int coinMaxHeight = sewerMaxHeight + 100;
+                    int coinMinHeight = (int) sewer.getPositionY() + sewerMaxHeight + 100;
                     int coinRandomHeight = new Random().nextInt(coinMaxHeight - coinMinHeight) + coinMinHeight;
 
                     coin.setPositionY(coinRandomHeight);
@@ -200,6 +190,10 @@ public class PhaseOne {
                 if (Intersector.overlaps(bird.getBody(), coin.getBody())) {
                     score++;
                     coin.setPositionX(-coin.getTexture(0).getWidth());
+                }
+
+                if (sewer.isTouched(coin, device)) {
+                    sewer.setPositionY(coin.getPositionY() - 100);
                 }
 
                 previous = coin;
@@ -219,7 +213,7 @@ public class PhaseOne {
                 }
             }
 
-            if (Intersector.overlaps(bird.getBody(), sewer.getBody())
+            if (sewer.isTouched(bird, device)
                     || bird.getPositionY() <= 0
                     || bird.getPositionY() >= device.getHeight()) {
                 state = 2;

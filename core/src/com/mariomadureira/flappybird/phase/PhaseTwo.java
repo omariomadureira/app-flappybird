@@ -1,5 +1,7 @@
 package com.mariomadureira.flappybird.phase;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.mariomadureira.flappybird.element.*;
 import com.mariomadureira.flappybird.config.*;
 import com.badlogic.gdx.Gdx;
@@ -44,6 +46,7 @@ public class PhaseTwo {
                         new Coin(),
                         new Coin(),
                         new Coin(),
+                        new Coin()
                 };
         tree = new Tree();
         tree.setPositionX(device.getWidth());
@@ -169,12 +172,6 @@ public class PhaseTwo {
 
                 sewer.setPositionY(sewerRandomHeight);
                 sewer.setPositionX(device.getWidth() + sewer.getImage().getWidth());
-
-                for (Coin coin : coins) {
-                    if (Intersector.overlaps(coin.getBody(), sewer.getBody())) {
-                        sewer.setPositionY(sewer.getPositionY() + 200);
-                    }
-                }
             }
 
             Coin previous = coins[0];
@@ -199,6 +196,10 @@ public class PhaseTwo {
                     coin.setPositionX(-coin.getTexture(0).getWidth());
                 }
 
+                if (sewer.isTouched(coin, device)) {
+                    sewer.setPositionY(coin.getPositionY() + 100);
+                }
+
                 previous = coin;
             }
 
@@ -216,7 +217,7 @@ public class PhaseTwo {
                 }
             }
 
-            if (Intersector.overlaps(bird.getBody(), sewer.getBody())
+            if (sewer.isTouched(bird, device)
                     || bird.getPositionY() <= 0
                     || bird.getPositionY() >= device.getHeight()) {
                 state = 2;
