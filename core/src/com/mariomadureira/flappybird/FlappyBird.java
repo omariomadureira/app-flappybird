@@ -7,9 +7,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mariomadureira.flappybird.config.Device;
-import com.mariomadureira.flappybird.phase.Main;
-import com.mariomadureira.flappybird.phase.PhaseOne;
-import com.mariomadureira.flappybird.phase.PhaseTwo;
+import com.mariomadureira.flappybird.phase.*;
 
 public class FlappyBird extends ApplicationAdapter {
     private OrthographicCamera camera;
@@ -20,6 +18,8 @@ public class FlappyBird extends ApplicationAdapter {
     private int phase;
     private PhaseOne phaseOne;
     private PhaseTwo phaseTwo;
+    private PhaseThree phaseThree;
+    private PhaseFour phaseFour;
 
     private int score;
 
@@ -49,6 +49,14 @@ public class FlappyBird extends ApplicationAdapter {
             case 2:
                 phaseTwo = new PhaseTwo();
                 phaseTwo.setScore(getScore());
+                break;
+            case 3:
+                phaseThree = new PhaseThree();
+                phaseThree.setScore(getScore());
+                break;
+            case 4:
+                phaseFour = new PhaseFour();
+                phaseFour.setScore(getScore());
                 break;
             default:
                 main = new Main();
@@ -83,6 +91,24 @@ public class FlappyBird extends ApplicationAdapter {
         } else if (getPhase() == 2) {
             phaseTwo.getBatch().setProjectionMatrix(camera.combined);
             phaseTwo.render();
+
+            if (phaseTwo.isFinished()) {
+                setScore(phaseTwo.getScore());
+                setPhase(3);
+                createPhase();
+            }
+        } else if (getPhase() == 3) {
+            phaseThree.getBatch().setProjectionMatrix(camera.combined);
+            phaseThree.render();
+
+            if (phaseThree.isFinished()) {
+                setScore(phaseThree.getScore());
+                setPhase(3);
+                createPhase();
+            }
+        } else if (getPhase() == 4) {
+            phaseFour.getBatch().setProjectionMatrix(camera.combined);
+            phaseFour.render();
         } else {
             main.getBatch().setProjectionMatrix(camera.combined);
             main.render();

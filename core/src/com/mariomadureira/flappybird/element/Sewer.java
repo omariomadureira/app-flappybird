@@ -26,7 +26,7 @@ public class Sewer {
             case 3:
                 texture = new Texture("sewer3.png");
                 break;
-            case 4:
+            default:
                 texture = new Texture("sewer4.png");
                 break;
         }
@@ -56,6 +56,15 @@ public class Sewer {
     public void move() {
         float deltaTime = Gdx.graphics.getDeltaTime();
         positionX = positionX - deltaTime * 200;
+    }
+
+    public void grow() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        if (rotated) {
+            positionY = positionY - deltaTime * 200;
+        } else {
+            positionY = positionY + deltaTime * 200;
+        }
     }
 
     public void rotate() {
