@@ -1,5 +1,9 @@
 package com.mariomadureira.flappybird.phase;
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.mariomadureira.flappybird.element.*;
 import com.mariomadureira.flappybird.config.*;
 import com.badlogic.gdx.Gdx;
@@ -11,10 +15,15 @@ import java.util.Random;
 public class PhaseOne {
     private Device device;
     private SpriteBatch batch;
+    private Stage stage;
 
     private Background background;
-    private Title gameOver;
-    private Text text;
+    private TextButton restart;
+
+    private Text title;
+    private Text subtitle;
+    private Text congratulations;
+
     private Time time;
     private int score;
 
@@ -23,15 +32,39 @@ public class PhaseOne {
     private Coin[] coins;
     private Tree tree;
 
-    private int state;
+    private int status;
 
     public PhaseOne() {
         device = new Device();
         batch = new SpriteBatch();
+        stage = new Stage();
+        Gdx.input.setInputProcessor(stage);
 
         background = new Background(1);
-        gameOver = new Title("gameOver");
-        text = new Text(3);
+
+        Text gameOver = new Text("tentar de novo");
+        gameOver.setTitle(70);
+        gameOver.calculateWidth();
+
+        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
+        textButtonStyle.font = gameOver.get();
+
+        double subtitleHeight = device.getHeight() * 0.35;
+        restart = new TextButton(gameOver.getText(), textButtonStyle);
+        restart.setPosition(device.getWidth() / 3 - gameOver.getWidth() / 2, (float) subtitleHeight);
+        stage.addActor(restart);
+
+        title = new Text("fase 1");
+        title.setTitle(120);
+        title.calculateWidth();
+
+        congratulations = new Text("fase concluida");
+        congratulations.setTitle(120);
+        congratulations.calculateWidth();
+
+        subtitle = new Text("");
+        subtitle.setSubtitle(2);
+
         time = new Time(45);
 
         bird = new Bird();
@@ -49,7 +82,7 @@ public class PhaseOne {
         tree.setPositionX(device.getWidth());
         tree.setPositionY(-20);
 
-        state = 0;
+        status = 0;
 
         begin();
     }
@@ -99,12 +132,12 @@ public class PhaseOne {
         }
 
         if (bird.getPositionX() >= device.getWidth()) {
-            state = 4;
+            status = 4;
         }
     }
 
     public boolean isFinished() {
-        return state == 5;
+        return status == 5;
     }
 
     private void draw() {
@@ -124,33 +157,42 @@ public class PhaseOne {
         String scoreText = "Pontos: " + score;
         time.getTitle().draw(batch, scoreText, device.getWidth() - 500, device.getHeight() - 50);
 
-        if (state == 0) {
-            text.get().draw(batch, "Fase 1: Toque para começar!",
-                    device.getWidth() / 2 - 270, device.getHeight() / 2 - gameOver.getTexture().getHeight());
-        } else if (state == 2) {
-            text.get().draw(batch, "Fase 1: Toque para reiniciar!",
-                    device.getWidth() / 2 - 270, device.getHeight() / 2 - gameOver.getTexture().getHeight());
-            batch.draw(gameOver.getTexture(), device.getWidth() / 2 - (float) gameOver.getTexture().getWidth() / 2,
-                    device.getHeight() / 2);
-        } else if (state == 3) {
+        if (status == 0) {
+            double titleHeight = device.getHeight() * 0.55;
+            title.get().draw(batch, title.getText(),
+                    device.getWidth() / 2 - title.getWidth() / 2, (float) titleHeight);
+
+            double subtitleHeight = device.getHeight() * 0.44;
+            subtitle.setText("Toque para começar!");
+            subtitle.calculateWidth();
+            subtitle.get().draw(batch, subtitle.getText(),
+                    device.getWidth() / 2 - subtitle.getWidth() / 2, (float) subtitleHeight);
+        } else if (status == 2) {
+            stage.draw();
+        } else if (status == 3) {
             batch.draw(tree.getTexture(), tree.getPositionX(), tree.getPositionY());
-        } else if (state > 3) {
+        } else if (status > 3) {
             batch.draw(tree.getTexture(), tree.getPositionX(), tree.getPositionY());
-            text.get().draw(batch, "Você passou de fase!",
-                    device.getWidth() / 2 - 215, device.getHeight() / 2);
-            text.get().draw(batch, "Toque para continuar...",
-                    device.getWidth() / 2 - 215, device.getHeight() / 2 - 40);
+            double titleHeight = device.getHeight() * 0.55;
+            congratulations.get().draw(batch, congratulations.getText(),
+                    device.getWidth() / 2 - congratulations.getWidth() / 2, (float) titleHeight);
+
+            double subtitleHeight = device.getHeight() * 0.44;
+            subtitle.setText("Toque para continuar!");
+            subtitle.calculateWidth();
+            subtitle.get().draw(batch, subtitle.getText(),
+                    device.getWidth() / 2 - subtitle.getWidth() / 2, (float) subtitleHeight);
         }
 
         batch.end();
     }
 
     public void render() {
-        if (state == 0) {
+        if (status == 0) {
             if (Gdx.input.justTouched()) {
-                state = 1;
+                status = 1;
             }
-        } else if (state == 1) {
+        } else if (status == 1) {
             bird.fall();
             sewer.move();
             time.loss();
@@ -192,9 +234,9 @@ public class PhaseOne {
                     coin.setPositionX(-coin.getTexture(0).getWidth());
                 }
 
-                if (sewer.isTouched(coin, device)) {
-                    sewer.setPositionY(coin.getPositionY() - 100);
-                }
+                //if (sewer.isTouched(coin, device)) {
+                    //sewer.setPositionY(coin.getPositionY() - 100);
+                //}
 
                 previous = coin;
             }
@@ -209,25 +251,28 @@ public class PhaseOne {
                 }
 
                 if (isEmptyScreen) {
-                    state = 3;
+                    status = 3;
                 }
             }
 
             if (sewer.isTouched(bird, device)
                     || bird.getPositionY() <= 0
                     || bird.getPositionY() >= device.getHeight()) {
-                state = 2;
+                status = 2;
             }
-        } else if (state == 2) {
-            if (Gdx.input.justTouched()) {
-                state = 1;
-                begin();
-            }
-        } else if (state == 3) {
+        } else if (status == 2) {
+            restart.addListener(new ChangeListener() {
+                @Override
+                public void changed(ChangeEvent event, Actor actor) {
+                    status = 1;
+                    begin();
+                }
+            });
+        } else if (status == 3) {
             finish();
         } else {
             if (Gdx.input.justTouched()) {
-                state = 5;
+                status = 5;
             }
         }
 

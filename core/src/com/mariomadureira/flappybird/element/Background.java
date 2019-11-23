@@ -13,6 +13,8 @@ public class Background {
             case 2:
                 texture = new Texture("background2.png");
                 break;
+            default:
+                texture = new Texture("background0.png");
         }
     }
 

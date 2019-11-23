@@ -7,12 +7,15 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.utils.viewport.StretchViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.mariomadureira.flappybird.config.Device;
+import com.mariomadureira.flappybird.phase.Main;
 import com.mariomadureira.flappybird.phase.PhaseOne;
 import com.mariomadureira.flappybird.phase.PhaseTwo;
 
 public class FlappyBird extends ApplicationAdapter {
     private OrthographicCamera camera;
     private Viewport viewport;
+
+    private Main main;
 
     private int phase;
     private PhaseOne phaseOne;
@@ -47,6 +50,8 @@ public class FlappyBird extends ApplicationAdapter {
                 phaseTwo = new PhaseTwo();
                 phaseTwo.setScore(getScore());
                 break;
+            default:
+                main = new Main();
         }
     }
 
@@ -59,7 +64,7 @@ public class FlappyBird extends ApplicationAdapter {
 
         score = 0;
 
-        phase = 1;
+        phase = 0;
         createPhase();
     }
 
@@ -80,6 +85,14 @@ public class FlappyBird extends ApplicationAdapter {
         } else if (getPhase() == 2) {
             phaseTwo.getBatch().setProjectionMatrix(camera.combined);
             phaseTwo.render();
+        } else {
+            main.getBatch().setProjectionMatrix(camera.combined);
+            main.render();
+
+            if (main.isPlayPressed()) {
+                setPhase(1);
+                createPhase();
+            }
         }
     }
 
