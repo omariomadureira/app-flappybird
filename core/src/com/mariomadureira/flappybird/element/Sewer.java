@@ -2,10 +2,8 @@ package com.mariomadureira.flappybird.element;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.mariomadureira.flappybird.config.Device;
-import sun.rmi.runtime.Log;
 
 public class Sewer {
     private Image image;
@@ -15,8 +13,24 @@ public class Sewer {
 
     private boolean rotated;
 
-    public Sewer() {
-        Texture texture = new Texture("sewer.png");
+    public Sewer(int type) {
+        Texture texture = null;
+
+        switch (type) {
+            case 1:
+                texture = new Texture("sewer1.png");
+                break;
+            case 2:
+                texture = new Texture("sewer2.png");
+                break;
+            case 3:
+                texture = new Texture("sewer3.png");
+                break;
+            case 4:
+                texture = new Texture("sewer4.png");
+                break;
+        }
+
         image = new Image(texture);
     }
 
@@ -24,10 +38,6 @@ public class Sewer {
     public Image getImage() {
         image.setPosition(positionX, positionY);
         return image;
-    }
-
-    public float getPositionX() {
-        return positionX;
     }
 
     public void setPositionX(float positionX) {
@@ -40,14 +50,6 @@ public class Sewer {
 
     public void setPositionY(float positionY) {
         this.positionY = positionY;
-    }
-
-    public boolean isRotated() {
-        return rotated;
-    }
-
-    public void setRotated(boolean rotated) {
-        rotated = rotated;
     }
     //endregion
 

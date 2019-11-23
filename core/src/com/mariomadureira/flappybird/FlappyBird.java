@@ -61,9 +61,7 @@ public class FlappyBird extends ApplicationAdapter {
         camera = new OrthographicCamera();
         camera.position.set(device.getWidth() / 2, device.getHeight() / 2, 0);
         viewport = new StretchViewport(device.getWidth(), device.getHeight(), camera);
-
         score = 0;
-
         phase = 0;
         createPhase();
     }
