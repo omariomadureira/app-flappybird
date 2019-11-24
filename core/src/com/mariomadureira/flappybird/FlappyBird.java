@@ -20,6 +20,7 @@ public class FlappyBird extends ApplicationAdapter {
     private PhaseTwo phaseTwo;
     private PhaseThree phaseThree;
     private PhaseFour phaseFour;
+    private PhaseFive phaseFive;
 
     private int score;
 
@@ -58,6 +59,10 @@ public class FlappyBird extends ApplicationAdapter {
                 phaseFour = new PhaseFour();
                 phaseFour.setScore(getScore());
                 break;
+            case 5:
+                phaseFive = new PhaseFive();
+                phaseFive.setScore(getScore());
+                break;
             default:
                 main = new Main();
         }
@@ -87,6 +92,7 @@ public class FlappyBird extends ApplicationAdapter {
                 setScore(phaseOne.getScore());
                 setPhase(2);
                 createPhase();
+                phaseOne = null;
             }
         } else if (getPhase() == 2) {
             phaseTwo.getBatch().setProjectionMatrix(camera.combined);
@@ -96,6 +102,7 @@ public class FlappyBird extends ApplicationAdapter {
                 setScore(phaseTwo.getScore());
                 setPhase(3);
                 createPhase();
+                phaseTwo = null;
             }
         } else if (getPhase() == 3) {
             phaseThree.getBatch().setProjectionMatrix(camera.combined);
@@ -103,12 +110,23 @@ public class FlappyBird extends ApplicationAdapter {
 
             if (phaseThree.isFinished()) {
                 setScore(phaseThree.getScore());
-                setPhase(3);
+                setPhase(4);
                 createPhase();
+                phaseThree = null;
             }
         } else if (getPhase() == 4) {
             phaseFour.getBatch().setProjectionMatrix(camera.combined);
             phaseFour.render();
+
+            if (phaseFour.isFinished()) {
+                setScore(phaseFour.getScore());
+                setPhase(5);
+                createPhase();
+                phaseFour = null;
+            }
+        } else if (getPhase() == 5) {
+            phaseFive.getBatch().setProjectionMatrix(camera.combined);
+            phaseFive.render();
         } else {
             main.getBatch().setProjectionMatrix(camera.combined);
             main.render();

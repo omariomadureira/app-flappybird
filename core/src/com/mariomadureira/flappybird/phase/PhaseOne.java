@@ -100,9 +100,9 @@ public class PhaseOne extends PhasePrincipal {
                 coin.setPositionX(-coin.getTexture(0).getWidth());
             }
 
-            //if (sewer.isTouched(coin, device)) {
-            //sewer.setPositionY(coin.getPositionY() - 100);
-            //}
+            if (sewer.isTouched(coin, getDevice())) {
+                coin.move();
+            }
 
             previous = coin;
         }
