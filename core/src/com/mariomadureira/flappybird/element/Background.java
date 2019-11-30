@@ -19,6 +19,9 @@ public class Background {
             case 4:
                 texture = new Texture("background4.png");
                 break;
+            case 5:
+                texture = new Texture("background5.png");
+                break;
             default:
                 texture = new Texture("background0.png");
         }

@@ -94,7 +94,7 @@ public class PhasePrincipal {
         subtitle = new Text("");
         subtitle.setSubtitle(2);
 
-        time = new Time(40);
+        time = new Time(45);
 
         bird = new Bird();
         bird.setPositionX(120);

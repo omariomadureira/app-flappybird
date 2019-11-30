@@ -28,6 +28,8 @@ public class FlappyBird extends ApplicationAdapter {
     private PhaseNine phaseNine;
     private PhaseTen phaseTen;
 
+    private EndGame endGame;
+
     //region Getters and Setters
     private int getScore() {
         return score;
@@ -87,6 +89,9 @@ public class FlappyBird extends ApplicationAdapter {
                 phaseTen = new PhaseTen();
                 phaseTen.setScore(getScore());
                 break;
+            case 11:
+                endGame = new EndGame(getScore());
+                break;
             default:
                 main = new Main();
         }
@@ -99,7 +104,7 @@ public class FlappyBird extends ApplicationAdapter {
         camera.position.set(device.getWidth() / 2, device.getHeight() / 2, 0);
         viewport = new StretchViewport(device.getWidth(), device.getHeight(), camera);
         score = 0;
-        phase = 10;
+        phase = 0;
         createPhase();
     }
 
@@ -201,6 +206,16 @@ public class FlappyBird extends ApplicationAdapter {
         } else if (getPhase() == 10) {
             phaseTen.getBatch().setProjectionMatrix(camera.combined);
             phaseTen.render();
+
+            if (phaseTen.isFinished()) {
+                setScore(phaseTen.getScore());
+                setPhase(11);
+                createPhase();
+                phaseTen = null;
+            }
+        } else if (getPhase() == 11) {
+            endGame.getBatch().setProjectionMatrix(camera.combined);
+            endGame.render();
         } else {
             main.getBatch().setProjectionMatrix(camera.combined);
             main.render();
