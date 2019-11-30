@@ -17,10 +17,9 @@ public class PhaseThree extends PhasePrincipal {
     public PhaseThree() {
         super.create("fase 3");
 
-        background = new Background(3);
+        background = new Background(1);
         sewer = new Sewer(3);
-        sewer.rotate();
-        coins = getCoins(4);
+        coins = getCoins(5);
 
         begin();
     }
@@ -29,9 +28,14 @@ public class PhaseThree extends PhasePrincipal {
     void begin() {
         super.begin();
 
-        float sewerHeight = (sewer.getImage().getHeight() - getDevice().getHeight() / 2) + getDevice().getHeight();
+        if (sewer.isRotated()) {
+            sewer.rotate();
+            sewer.setRotated(false);
+        }
+
+        float sewerHeight = getDevice().getHeight() / 2 - sewer.getImage().getHeight();
         sewer.setPositionY(sewerHeight);
-        sewer.setPositionX(getDevice().getWidth() + sewer.getImage().getWidth());
+        sewer.setPositionX(getDevice().getWidth());
 
         Coin previous = coins.get(0);
 
@@ -40,7 +44,7 @@ public class PhaseThree extends PhasePrincipal {
                 coins.get(i).setPositionX(previous.getPositionX() + getDevice().getWidth() / 2);
             }
 
-            coins.get(i).setPositionY(sewerHeight - sewer.getImage().getHeight() - 150);
+            coins.get(i).setPositionY(sewerHeight + sewer.getImage().getHeight() + 150);
             previous = coins.get(i);
         }
     }
@@ -71,12 +75,28 @@ public class PhaseThree extends PhasePrincipal {
         }
 
         if (sewer.isGone() && time.get() > 0) {
-            int sewerMaxHeight = (int) getDevice().getHeight() + bird.getTexture(0).getHeight();
-            int sewerMinHeight = (int) getDevice().getHeight() + 600;
-            int sewerRandomHeight = new Random().nextInt(sewerMinHeight - sewerMaxHeight) + sewerMaxHeight;
+            sewer.rotate();
 
-            sewer.setPositionY(sewerRandomHeight);
-            sewer.setPositionX(getDevice().getWidth() + sewer.getImage().getWidth());
+            if (sewer.isRotated()) {
+                sewer.setRotated(false);
+
+                int sewerImageHeight = (int) sewer.getImage().getHeight();
+                int sewerMaxHeight = (int) getDevice().getHeight() - sewerImageHeight - bird.getTexture(0).getHeight() - 200;
+                int sewerMinHeight = -600;
+                int sewerRandomHeight = new Random().nextInt(sewerMaxHeight - sewerMinHeight) + sewerMinHeight;
+
+                sewer.setPositionY(sewerRandomHeight);
+                sewer.setPositionX(getDevice().getWidth());
+            } else {
+                sewer.setRotated(true);
+
+                int sewerMaxHeight = (int) getDevice().getHeight() + bird.getTexture(0).getHeight();
+                int sewerMinHeight = (int) getDevice().getHeight() + 600;
+                int sewerRandomHeight = new Random().nextInt(sewerMinHeight - sewerMaxHeight) + sewerMaxHeight;
+
+                sewer.setPositionY(sewerRandomHeight);
+                sewer.setPositionX(getDevice().getWidth() + sewer.getImage().getWidth());
+            }
         }
 
         Coin previous = coins.get(0);
@@ -88,10 +108,17 @@ public class PhaseThree extends PhasePrincipal {
 
             if (coin.isGone() && time.get() > 0) {
                 int sewerImageHeight = (int) sewer.getImage().getHeight();
-                int coinMaxHeight = (int) sewer.getPositionY() - sewerImageHeight - 100;
-                int coinMinHeight = 150;
-                int coinRandomHeight = new Random().nextInt(coinMaxHeight - coinMinHeight) + coinMinHeight;
+                int coinMaxHeight = 0, coinMinHeight = 0;
 
+                if (sewer.isRotated()) {
+                    coinMaxHeight = (int) sewer.getPositionY() - sewerImageHeight - 100;
+                    coinMinHeight = 150;
+                } else {
+                    coinMaxHeight = sewerImageHeight + 100;
+                    coinMinHeight = (int) sewer.getPositionY() + sewerImageHeight + 100;
+                }
+
+                int coinRandomHeight = new Random().nextInt(coinMaxHeight - coinMinHeight) + coinMinHeight;
                 coin.setPositionY(coinRandomHeight);
                 coin.setPositionX(getDevice().getWidth());
             }

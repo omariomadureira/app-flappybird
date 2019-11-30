@@ -14,15 +14,19 @@ public class FlappyBird extends ApplicationAdapter {
     private Viewport viewport;
 
     private Main main;
-
     private int phase;
+    private int score;
+
     private PhaseOne phaseOne;
     private PhaseTwo phaseTwo;
     private PhaseThree phaseThree;
     private PhaseFour phaseFour;
     private PhaseFive phaseFive;
-
-    private int score;
+    private PhaseSix phaseSix;
+    private PhaseSeven phaseSeven;
+    private PhaseEight phaseEight;
+    private PhaseNine phaseNine;
+    private PhaseTen phaseTen;
 
     //region Getters and Setters
     private int getScore() {
@@ -63,6 +67,26 @@ public class FlappyBird extends ApplicationAdapter {
                 phaseFive = new PhaseFive();
                 phaseFive.setScore(getScore());
                 break;
+            case 6:
+                phaseSix = new PhaseSix();
+                phaseSix.setScore(getScore());
+                break;
+            case 7:
+                phaseSeven = new PhaseSeven();
+                phaseSeven.setScore(getScore());
+                break;
+            case 8:
+                phaseEight = new PhaseEight();
+                phaseEight.setScore(getScore());
+                break;
+            case 9:
+                phaseNine = new PhaseNine();
+                phaseNine.setScore(getScore());
+                break;
+            case 10:
+                phaseTen = new PhaseTen();
+                phaseTen.setScore(getScore());
+                break;
             default:
                 main = new Main();
         }
@@ -75,7 +99,7 @@ public class FlappyBird extends ApplicationAdapter {
         camera.position.set(device.getWidth() / 2, device.getHeight() / 2, 0);
         viewport = new StretchViewport(device.getWidth(), device.getHeight(), camera);
         score = 0;
-        phase = 0;
+        phase = 10;
         createPhase();
     }
 
@@ -127,6 +151,56 @@ public class FlappyBird extends ApplicationAdapter {
         } else if (getPhase() == 5) {
             phaseFive.getBatch().setProjectionMatrix(camera.combined);
             phaseFive.render();
+
+            if (phaseFive.isFinished()) {
+                setScore(phaseFive.getScore());
+                setPhase(6);
+                createPhase();
+                phaseFive = null;
+            }
+        } else if (getPhase() == 6) {
+            phaseSix.getBatch().setProjectionMatrix(camera.combined);
+            phaseSix.render();
+
+            if (phaseSix.isFinished()) {
+                setScore(phaseSix.getScore());
+                setPhase(7);
+                createPhase();
+                phaseSix = null;
+            }
+        } else if (getPhase() == 7) {
+            phaseSeven.getBatch().setProjectionMatrix(camera.combined);
+            phaseSeven.render();
+
+            if (phaseSeven.isFinished()) {
+                setScore(phaseSeven.getScore());
+                setPhase(8);
+                createPhase();
+                phaseSeven = null;
+            }
+        } else if (getPhase() == 8) {
+            phaseEight.getBatch().setProjectionMatrix(camera.combined);
+            phaseEight.render();
+
+            if (phaseEight.isFinished()) {
+                setScore(phaseEight.getScore());
+                setPhase(9);
+                createPhase();
+                phaseEight = null;
+            }
+        } else if (getPhase() == 9) {
+            phaseNine.getBatch().setProjectionMatrix(camera.combined);
+            phaseNine.render();
+
+            if (phaseNine.isFinished()) {
+                setScore(phaseNine.getScore());
+                setPhase(10);
+                createPhase();
+                phaseNine = null;
+            }
+        } else if (getPhase() == 10) {
+            phaseTen.getBatch().setProjectionMatrix(camera.combined);
+            phaseTen.render();
         } else {
             main.getBatch().setProjectionMatrix(camera.combined);
             main.render();

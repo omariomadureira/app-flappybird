@@ -51,6 +51,14 @@ public class Sewer {
     public void setPositionY(float positionY) {
         this.positionY = positionY;
     }
+
+    public boolean isRotated() {
+        return rotated;
+    }
+
+    public void setRotated(boolean rotated) {
+        this.rotated = rotated;
+    }
     //endregion
 
     public void move() {
@@ -67,13 +75,25 @@ public class Sewer {
         }
     }
 
+    public void shrink() {
+        float deltaTime = Gdx.graphics.getDeltaTime();
+        if (rotated) {
+            positionY = positionY + deltaTime * 200;
+        } else {
+            positionY = positionY - deltaTime * 200;
+        }
+    }
+
     public void rotate() {
         image.rotateBy(180);
-        rotated = true;
     }
 
     public boolean isGone() {
         return positionX < -image.getWidth();
+    }
+
+    public boolean inScreen(float deviceWidth) {
+        return positionX <= deviceWidth && !isGone();
     }
 
     public boolean isTouched(Bird bird, Device device) {
@@ -118,8 +138,9 @@ public class Sewer {
             float sewerPositionY = device.getHeight() - sewerHeightIn - coin.getTexture(0).getHeight();
 
             if (coin.getPositionY() >= sewerPositionY) {
-                float sewerPositionX = positionX - image.getWidth() - coin.getTexture(0).getWidth();
-                float sewerWidthPositionX = sewerPositionX + image.getWidth();
+                float margin = 150;
+                float sewerPositionX = positionX - image.getWidth() - coin.getTexture(0).getWidth() - margin;
+                float sewerWidthPositionX = sewerPositionX + image.getWidth() + margin + 50;
 
                 if (coin.getPositionX() >= sewerPositionX && coin.getPositionX() <= sewerWidthPositionX) {
                     touched = true;
@@ -130,8 +151,9 @@ public class Sewer {
             float sewerHeightIn = image.getHeight() - sewerHeightOut;
 
             if (coin.getPositionY() <= sewerHeightIn) {
-                float sewerPositionX = positionX - coin.getTexture(0).getWidth();
-                float sewerWidthPositionX = sewerPositionX + image.getWidth();
+                float margin = 150;
+                float sewerPositionX = positionX - coin.getTexture(0).getWidth() - margin;
+                float sewerWidthPositionX = sewerPositionX + image.getWidth() + margin;
 
                 if (coin.getPositionX() >= sewerPositionX && coin.getPositionX() <= sewerWidthPositionX) {
                     touched = true;
